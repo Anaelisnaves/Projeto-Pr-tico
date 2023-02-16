@@ -1,9 +1,9 @@
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <stdio.h>
 
 using namespace std;
-
 struct registro {
 
     int ID;
@@ -13,6 +13,28 @@ struct registro {
     float precoVenda;
 
 };
+
+int Converte() { //converte o arquivo em binario
+    std::ifstream infile("base8.csv"); // Abrir o arquivo CSV
+    std::ofstream outfile("base08.bin", std::ios::out | std::ios::binary); // Criar o arquivo binário
+
+    std::string linha;
+    while (std::getline(infile, linha)) { // Ler cada linha do arquivo CSV
+        int inteiro;
+        std::string texto;
+        std::stringstream ss(linha);
+        std::getline(ss, texto, ','); // Extrair o valor inteiro
+        inteiro = std::stoi(texto);
+        std::getline(ss, texto); // Extrair a string
+        outfile.write(reinterpret_cast<char*>(&inteiro), sizeof(int)); // Escrever o valor inteiro no arquivo binário
+        outfile.write(texto.c_str(), texto.size()); // Escrever a string no arquivo binário
+    }
+
+    infile.close(); // Fechar o arquivo CSV
+    outfile.close(); // Fechar o arquivo binário
+    return 0;
+}
+
 
 void swap(int vetor[],int pos1, int pos2){
     int aux = vetor[pos1];
